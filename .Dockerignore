@@ -1,0 +1,9 @@
+vendor/
+node_modules/
+# .envs
+storage/logs/*
+storage/framework/*
+bootstrap/cache/*.php
+params.json
+template.yml
+.env.example
