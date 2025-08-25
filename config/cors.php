@@ -1,34 +1,20 @@
 <?php
 
 return [
+    // Descomenta esta línea para probar en local (solo permitirá el origen de tu Angular):
+    // 'allowed_origins' => ['http://localhost:4200'],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Cross-Origin Resource Sharing (CORS) Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure your settings for cross-origin resource sharing
-    | or "CORS". This determines what cross-origin operations may execute
-    | in web browsers. You are free to adjust these settings as needed.
-    |
-    | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
-    |
-    */
+    // Descomenta esta línea para aplicar CORS a todas las rutas durante pruebas locales:
+    // 'paths' => ['*'],
+     
+  'paths' => [], 
+              
+  'allowed_methods' => ['*'],
+  'allowed_origins'=> ['*'],
 
-    'paths' => ['*'],
-
-    'allowed_methods' => ['*'],
-
-    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
-
-    'allowed_origins_patterns' => [],
-
-    'allowed_headers' => ['*'],
-
-    'exposed_headers' => [],
-
-    'max_age' => 0,
-
-    'supports_credentials' => true,
-
+  'allowed_origins_patterns' => [],
+  'allowed_headers' => ['*'],
+  'exposed_headers' => ['*'],
+  'max_age' => 0,
+  'supports_credentials' => false,
 ];

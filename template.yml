@@ -18,6 +18,16 @@ Parameters:
     Type: String
     Default: "0"
     Description: "Cambiar este valor para forzar nueva revisión de TaskDefinition"
+    
+  DomainAccess:
+    Type: String
+    Default: "https://main.d22lhfa5x4lj9x.amplifyapp.com"
+
+  # === AGREGADO: Certificado para HTTPS ===
+  ACMCertificateArn:
+    Type: String
+    Default: arn:aws:acm:us-east-1:697241029346:certificate/13498df3-ad39-44e8-943b-9d51529be021
+    Description: ARN del certificado ACM para HTTPS en el ALB
 
   ContainerPort:
     Type: Number
@@ -338,6 +348,23 @@ Resources:
       LoadBalancerArn: !Ref ALB
       Port: 80
       Protocol: HTTP
+      # === CAMBIO: redirige HTTP -> HTTPS 443 ===
+      DefaultActions:
+        - Type: redirect
+          RedirectConfig:
+            Protocol: HTTPS
+            Port: '443'
+            StatusCode: HTTP_301
+
+  # === AGREGADO: Listener HTTPS 443 con certificado ===
+  HTTPSListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref ALB
+      Port: 443
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: !Ref ACMCertificateArn
       DefaultActions:
         - Type: forward
           TargetGroupArn: !Ref ALBTargetGroup
@@ -476,6 +503,12 @@ Resources:
               Value: stderr
             - Name: LOG_LEVEL
               Value: debug
+
+            # ======== CORS (SOLO AÑADIDO) ========
+            - Name: FRONTEND_URL
+              Value: !Ref DomainAccess
+            # ======== FIN CORS ========
+
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -494,6 +527,7 @@ Resources:
     Type: AWS::ECS::Service
     DependsOn:
       - HTTPListener
+      - HTTPSListener
     Properties:
       ServiceName: !Sub '${ProjectName}-svc'
       Cluster: !Ref ECSCluster
@@ -521,6 +555,9 @@ Outputs:
   ALBURL:
     Description: Public URL del ALB
     Value: !Sub 'http://${ALB.DNSName}'
+  ALBURLHTTPS:
+    Description: Public HTTPS URL del ALB
+    Value: !Sub 'https://${ALB.DNSName}'
   ClusterName:
     Value: !Ref ECSCluster
   ServiceName:

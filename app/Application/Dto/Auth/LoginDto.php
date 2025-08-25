@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Application\Dto\Auth;
-class LoginDTO
+
+
+class LoginDto
 {
     public function __construct(
         public string $email,

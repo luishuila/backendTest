@@ -15,7 +15,6 @@ final class RegisterUser
         private AuthServiceInterface $auth
     ) {}
 
-    /** @return array{access_token:string, token_type:string, expires_in:int, user:mixed} */
     public function __invoke(RegisterDTO $dto): array
     {
         $user = new UserEntity(

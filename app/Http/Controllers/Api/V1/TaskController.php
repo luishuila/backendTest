@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Application\DTO\Tasks\CreateTaskDTO;
-use App\Application\DTO\Tasks\UpdateTaskDTO;
+use App\Application\Dto\Tasks\CreateTaskDto;
+use App\Application\Dto\Tasks\UpdateTaskDto;
 use App\Application\UseCases\Tasks\{ListTasks,GetTask,CreateTask,UpdateTask,DeleteTask};
 use App\Domain\Enums\TaskStatus;
 use App\Http\Controllers\Controller;
@@ -26,7 +26,7 @@ class TaskController extends Controller
 
     public function store(TaskStoreRequest $req, CreateTask $uc)
     {
-        $dto = new CreateTaskDTO(
+        $dto = new CreateTaskDto(
             title: $req->string('title'),
             description: $req->input('description'),
             status: TaskStatus::from($req->input('status', 'PENDING'))
@@ -39,7 +39,7 @@ class TaskController extends Controller
 
     public function update(TaskUpdateRequest $req, int $id, UpdateTask $uc)
     {
-        $dto = new UpdateTaskDTO(
+        $dto = new UpdateTaskDto(
             id: $id,
             title: $req->string('title'),
             description: $req->input('description'),

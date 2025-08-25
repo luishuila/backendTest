@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Application\Dto\Auth\LoginDTO; 
+use App\Application\Dto\Auth\LoginDto; 
 
 class LoginRequest extends FormRequest
 {
@@ -22,9 +22,9 @@ class LoginRequest extends FormRequest
     }
 
 
-    public function toDto(): LoginDTO
+    public function toDto(): LoginDto
     {
-        return new LoginDTO(
+        return new LoginDto(
             email: (string) $this->input('email'),
             password: (string) $this->input('password'),
             remember: (bool) $this->boolean('remember')

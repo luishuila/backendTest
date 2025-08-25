@@ -25,5 +25,6 @@
   { "ParameterKey": "DBUsername",   "ParameterValue": "postgres" },
   { "ParameterKey": "DBPassword",   "ParameterValue": "taskspass" },
   { "ParameterKey": "DBSSLMode",    "ParameterValue": "require" },  
-  { "ParameterKey": "ForceUpdate", "ParameterValue": "17274792987" } 
+  { "ParameterKey": "ForceUpdate",  "ParameterValue": "170070203070" } ,
+  { "ParameterKey": "DomainAccess", "ParameterValue": "https://main.d22lhfa5x4lj9x.amplifyapp.com" } 
 ]

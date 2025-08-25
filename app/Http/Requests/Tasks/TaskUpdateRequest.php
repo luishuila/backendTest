@@ -13,8 +13,8 @@ class TaskUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'       => ['required','string','max:150'],
-            'description' => ['nullable','string','max:1000'],
+            'title'       => ['required','string','max:150', ,'min:3'],
+            'description' => ['nullable','string','max:1000',,'min:2'],
             'status'      => ['required', new Enum(TaskStatus::class)],
         ];
     }

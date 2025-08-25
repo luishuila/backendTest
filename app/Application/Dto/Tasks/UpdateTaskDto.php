@@ -4,7 +4,7 @@ namespace App\Application\Dto\Tasks;
 
 use App\Domain\Enums\TaskStatus;
 
-class UpdateTaskDTO
+class UpdateTaskDto
 {
     public function __construct(
         public int $id,

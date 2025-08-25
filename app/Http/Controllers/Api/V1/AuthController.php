@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
+
 
 class AuthController extends Controller
 {
@@ -25,15 +25,12 @@ class AuthController extends Controller
     public function login(LoginRequest $request, LoginUser $useCase): JsonResponse
     {
 
-    
         $dto = $request->toDto();
-        $token = $useCase($dto);  
-
-        if (!$token) {
+        $payload = $useCase($dto);
+        if (!$payload) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
-
-        return response()->json(['token' => $token], 200);
+        return response()->json($payload, 200);
     }
 
 
