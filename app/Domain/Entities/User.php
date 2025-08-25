@@ -8,6 +8,6 @@ class User
         public ?int $id,
         public string $name,
         public string $email,
-        public ?string $password = null, // hashed o null cuando no sea necesario
+        public ?string $password = null,
     ) {}
 }

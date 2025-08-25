@@ -19,7 +19,7 @@ class Handler extends ExceptionHandler
 {
     public function register(): void
     {
-        // 401
+       
         $this->renderable(function (AuthenticationException $e, Request $request) {
             if ($request->is('api/*')) {
                 return $this->jsonError('No autenticado', 401, $e, [
@@ -29,7 +29,7 @@ class Handler extends ExceptionHandler
             }
         });
 
-        // 403
+     
         $this->renderable(function (AuthorizationException $e, Request $request) {
             if ($request->is('api/*')) {
                 return $this->jsonError('Acceso denegado', 403, $e, [
@@ -39,7 +39,7 @@ class Handler extends ExceptionHandler
             }
         });
 
-        // 404 por modelo no encontrado
+ 
         $this->renderable(function (ModelNotFoundException $e, Request $request) {
             if ($request->is('api/*')) {
                 $model = class_basename($e->getModel());
@@ -50,7 +50,7 @@ class Handler extends ExceptionHandler
             }
         });
 
-        // 404 por ruta/recurso HTTP
+   
         $this->renderable(function (NotFoundHttpException $e, Request $request) {
             if ($request->is('api/*')) {
                 return $this->jsonError('Ruta o recurso no encontrado', 404, $e, [
@@ -60,7 +60,7 @@ class Handler extends ExceptionHandler
             }
         });
 
-        // 405
+
         $this->renderable(function (MethodNotAllowedHttpException $e, Request $request) {
             if ($request->is('api/*')) {
                 $allowHeader = $e->getHeaders()['Allow'] ?? '';
@@ -73,11 +73,11 @@ class Handler extends ExceptionHandler
             }
         });
 
-        // 422
+
         $this->renderable(function (ValidationException $e, Request $request) {
             if ($request->is('api/*')) {
 
-                // Estructura de errores por campo
+
                 $errors = $e->errors();
                 $fields = collect($errors)->map(function (array $messages, string $field) {
                     return [
@@ -86,7 +86,7 @@ class Handler extends ExceptionHandler
                     ];
                 })->values();
 
-                // Detectar regla unique en 'email' para mensaje amigable
+
                 $failed = method_exists($e, 'validator') && $e->validator ? $e->validator->failed() : [];
                 $emailFailedRules = array_change_key_case($failed['email'] ?? [], CASE_LOWER);
                 $duplicateEmail = array_key_exists('unique', $emailFailedRules);
@@ -103,7 +103,7 @@ class Handler extends ExceptionHandler
             }
         });
 
-        // 429
+
         $this->renderable(function (ThrottleRequestsException $e, Request $request) {
             if ($request->is('api/*')) {
                 $retryAfter = $e->getHeaders()['Retry-After'] ?? null;
@@ -117,12 +117,12 @@ class Handler extends ExceptionHandler
             }
         });
 
-        // Fallback
+
         $this->renderable(function (Throwable $e, Request $request) {
             if ($request->is('api/*')) {
                 $status  = $e instanceof HttpExceptionInterface ? $e->getStatusCode() : 500;
 
-                // Para 500 usamos un mensaje genérico y seguro
+           
                 $title   = $status === 500
                     ? 'Error interno del servidor'
                     : ($e->getMessage() ?: 'Error');
@@ -139,29 +139,27 @@ class Handler extends ExceptionHandler
         });
     }
 
-    /**
-     * Respuesta JSON estandarizada para errores.
-     */
+
     private function jsonError(string $message, int $status, Throwable $e, array $extra = [])
     {
-        // Estructura consistente para el frontend
+      
         $payload = array_merge([
             'success' => false,
             'type'    => $extra['type']   ?? 'ERROR',
             'status'  => $status,
-            'title'   => $message,          // título amigable
-            'message' => $message,          // compatibilidad hacia atrás
+            'title'   => $message,          
+            'message' => $message,          
         ], $extra);
 
-        // Metadatos de depuración (solo en local / debug)
+   
         if (config('app.debug')) {
             $payload['exception'] = class_basename($e);
             $payload['file']      = $e->getFile();
             $payload['line']      = $e->getLine();
-            $payload['trace']     = collect($e->getTrace())->take(3); // corto y útil
+            $payload['trace']     = collect($e->getTrace())->take(3); 
         }
 
-        // Log detallado (servidor)
+        
         Log::error("API Exception: {$message}", [
             'status'    => $status,
             'exception' => get_class($e),

@@ -16,12 +16,10 @@ if [[ -n "${DB_HOST:-}" && -n "${DB_PORT:-}" ]]; then
   done
 fi
 
-
 if ! php -r "require 'vendor/autoload.php'; echo (env('APP_KEY') ?: (getenv('APP_KEY') ?: '')) ? 1 : 0;" | grep -q 1; then
   echo "Generando APP_KEY..."
   php artisan key:generate --force || true
 fi
-
 
 if [[ ! -e public/storage ]]; then
   php artisan storage:link || true

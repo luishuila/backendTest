@@ -2,8 +2,7 @@
 
 namespace App\Providers;
 
-use App\Repositories\Contracts\TaskRepositoryInterface;
-use App\Repositories\Eloquent\TaskRepository;
+
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Http\Request;
