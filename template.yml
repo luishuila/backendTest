@@ -23,7 +23,7 @@ Parameters:
     Type: String
     Default: "https://main.d22lhfa5x4lj9x.amplifyapp.com"
 
-  # === AGREGADO: Certificado para HTTPS ===
+
   ACMCertificateArn:
     Type: String
     Default: arn:aws:acm:us-east-1:697241029346:certificate/13498df3-ad39-44e8-943b-9d51529be021
@@ -68,7 +68,7 @@ Parameters:
     NoEcho: true
     Description: JWT secret (HS256)
 
-  # ======== Modo de BD ========
+
   UseExistingDb:
     Type: String
     AllowedValues: ['true', 'false']
@@ -79,7 +79,7 @@ Parameters:
     Default: '0.0.0.0/0'
     Description: "CIDR que podrá conectarse directo al RDS (usa TU_IP/32 en pruebas)"
 
-  # ======== Variables de BD (comunes) ========
+
   DBConnection:
     Type: String
     Default: pgsql
@@ -106,7 +106,7 @@ Parameters:
     Default: 'require'
     AllowedValues: ['disable', 'allow', 'prefer', 'require', 'verify-ca', 'verify-full']
 
-  # ======== Config de RDS (si se crea) ========
+
   DBInstanceClass:
     Type: String
     Default: db.t4g.micro
@@ -128,7 +128,7 @@ Conditions:
   CreateRds: !Equals [!Ref UseExistingDb, 'false']
 
 Resources:
-  # --- Networking ---
+
   VPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -267,7 +267,7 @@ Resources:
       RouteTableId: !Ref PrivateRouteTable
       SubnetId: !Ref PrivateSubnet2
 
-  # --- Security Groups ---
+
   AlbSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -319,7 +319,7 @@ Resources:
         - Key: Name
           Value: !Sub '${ProjectName}-rds-sg'
 
-  # --- ALB ---
+
   ALB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -348,7 +348,7 @@ Resources:
       LoadBalancerArn: !Ref ALB
       Port: 80
       Protocol: HTTP
-      # === CAMBIO: redirige HTTP -> HTTPS 443 ===
+
       DefaultActions:
         - Type: redirect
           RedirectConfig:
@@ -356,7 +356,7 @@ Resources:
             Port: '443'
             StatusCode: HTTP_301
 
-  # === AGREGADO: Listener HTTPS 443 con certificado ===
+
   HTTPSListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
@@ -369,7 +369,7 @@ Resources:
         - Type: forward
           TargetGroupArn: !Ref ALBTargetGroup
 
-  # --- Logs + Cluster ---
+
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -405,7 +405,7 @@ Resources:
               Service: ecs-tasks.amazonaws.com
             Action: 'sts:AssumeRole'
 
-  # --- RDS (si UseExistingDb=false) ---
+
   DBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Condition: CreateRds
@@ -442,7 +442,7 @@ Resources:
         - Key: Name
           Value: !Sub '${ProjectName}-${Env}-pg'
 
-  # --- Task Definition ---
+
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
@@ -477,7 +477,7 @@ Resources:
               Value: HS256
             - Name: PHP_FPM_PORT
               Value: !Sub '${PhpFpmPort}'
-            # ======== ENV BD ========
+
             - Name: DB_CONNECTION
               Value: !Ref DBConnection
             - Name: DB_HOST
@@ -494,7 +494,7 @@ Resources:
               Value: !Ref DBSSLMode
             - Name: FORCE_ROLL
               Value: !Ref ForceUpdate
-            # ======== ENV APP (usabas los parámetros pero no se inyectaban) ========
+        
             - Name: APP_KEY
               Value: !Ref LaravelAppKey
             - Name: JWT_SECRET
@@ -504,10 +504,10 @@ Resources:
             - Name: LOG_LEVEL
               Value: debug
 
-            # ======== CORS (SOLO AÑADIDO) ========
+  
             - Name: FRONTEND_URL
               Value: !Ref DomainAccess
-            # ======== FIN CORS ========
+
 
           LogConfiguration:
             LogDriver: awslogs
